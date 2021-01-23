@@ -1,0 +1,48 @@
+.down_content_bar {
+    display: flex;
+    flex-direction: row;
+    height: 40px;
+    justify-content: space-around;
+    align-items: center;
+    font-family: Roboto;
+}
+.menu {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex: 1 1 16.67%;
+
+}
+.number_container {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.number {
+    background: #5A657E;
+    color: #F7F7F8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    max-width: 22px;
+    max-height: 22px;
+}
+.text {
+    color: #727B91;
+    font-weight: 500;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.line {
+    background-color: #B9BFCF;
+    width: 50%;
+}
+.active_text {
+    color: #080808;
+}
+.active_number {
+    background-color: #3366FF;
+}

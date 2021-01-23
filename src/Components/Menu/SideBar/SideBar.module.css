@@ -1,0 +1,23 @@
+.side_bar {
+    background-color: #2D3A59;
+    display: flex;
+    flex-direction: column;
+}
+.icon {
+    color: #F6F7F7;
+}
+.up_icons {
+     flex: 1 1 auto;
+ }
+.down_icons {
+    flex: 0 1 auto;
+}
+
+.icon_wrapper {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    text-align: center;
+}
+.active_icon_wrapper {
+    background-color: #FFC84C;
+}
