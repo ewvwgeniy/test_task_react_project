@@ -1,26 +1,16 @@
 import {connect} from "react-redux"
 import ObjectInfo from "./ObjectInfo";
 import {
-    blackDegreeChangeAC, cancelChangeAC,
-    dateTimeChangeAC,
+    cancelChangeAC,
     deleteObjAC,
-    delWarnChangeAC, dragCoefChangeAC,
-    eccentricityChangeAC,
-    editModChangeAC, linSizChangeAC, masChangeAC,
-    nameChangeAC, newObjCreateConfirmAC,
-    nodLongChangeAC,
-    objCntChangeAC,
-    orbitalInclChangeAC,
-    perArgChangeAC,
-    planeCntChangeAC,
-    priorityChangeAC,
-    saveChangeAC,
-    semiMajAxisChangeAC, trueAnomalyChangeAC
+    delWarnChangeAC,
+    editModChangeAC,
+    newObjCreateConfirmAC, objChangeAC,
+    saveChangeAC
 } from "../../../../Redux/Reducer";
 
 const mapStateToProps = (state) => {
     let obj
-    let wrong_values
     if (state.objects_obj.obj_info.edit_mod === 1) {
         obj = state.objects_obj.temporary_obj
     } else {
@@ -51,56 +41,14 @@ const mapDispatchToProps = (dispatch) => {
         saveChangeAC: () => {
             dispatch(saveChangeAC())
         },
-        nameChangeAC: (name) => {
-            dispatch(nameChangeAC(name))
-        },
-        dateTimeChangeAC: (date_time) => {
-            dispatch(dateTimeChangeAC(date_time))
-        },
-        priorityChangeAC: (priority) => {
-            dispatch(priorityChangeAC(priority))
-        },
-        planeCntChangeAC: (plane_cnt) => {
-            dispatch(planeCntChangeAC(plane_cnt))
-        },
-        objCntChangeAC: (obj_cnt) => {
-            dispatch(objCntChangeAC(obj_cnt))
-        },
-        orbitalInclChangeAC: (orbital_incl) => {
-            dispatch(orbitalInclChangeAC(orbital_incl))
-        },
-        perArgChangeAC: (per_arg) => {
-            dispatch(perArgChangeAC(per_arg))
-        },
-        semiMajAxisChangeAC: (semi_maj_axis) => {
-            dispatch(semiMajAxisChangeAC(semi_maj_axis))
-        },
-        eccentricityChangeAC: (eccentricity) => {
-            dispatch(eccentricityChangeAC(eccentricity))
-        },
-        nodLongChangeAC: (nod_long) => {
-            dispatch(nodLongChangeAC(nod_long))
-        },
-        trueAnomalyChangeAC: (true_anomaly) => {
-            dispatch(trueAnomalyChangeAC(true_anomaly))
-        },
-        blackDegreeChangeAC: (black_degree) => {
-            dispatch(blackDegreeChangeAC(black_degree))
-        },
-        linSizChangeAC: (lin_siz) => {
-            dispatch(linSizChangeAC(lin_siz))
-        },
-        masChangeAC: (mas) => {
-            dispatch(masChangeAC(mas))
-        },
-        dragCoefChangeAC: (drag_coef) => {
-            dispatch(dragCoefChangeAC(drag_coef))
-        },
         newObjCreateConfirmAC: () => {
             dispatch(newObjCreateConfirmAC())
         },
         cancelChangeAC: () => {
             dispatch(cancelChangeAC())
+        },
+        objChangeAC: (field_name, field_value) => {
+            dispatch(objChangeAC(field_name, field_value))
         }
     }
 }

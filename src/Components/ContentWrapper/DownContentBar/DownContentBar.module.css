@@ -4,7 +4,7 @@
     height: 40px;
     justify-content: space-around;
     align-items: center;
-    font-family: Roboto;
+    font-family: Roboto, serif;
 }
 .menu {
     height: 100%;

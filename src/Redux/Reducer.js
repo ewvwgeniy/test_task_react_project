@@ -2,25 +2,11 @@ const CUR_OBJ_CHANGE = 'CUR_OBJ_CHANGE'
 const DELETE_WARN_CHANGE = 'DELETE_WARN_CHANGE'
 const DELETE_OBJ = 'DELETE_OBJ'
 const EDIT_MOD_CHANGE = 'EDIT_MOD_CHANGE'
-const NAME_CHANGE = 'NAME_CHANGE'
 const SAVE_CHANGE = 'SAVE_CHANGE'
-const DATE_TIME_CHANGE = 'DATE_TIME_CHANGE'
-const PRIORITY_CHANGE = 'PRIORITY_CHANGE'
-const PLANE_CNT_CHANGE = 'PLANE_CNT_CHANGE'
-const OBJ_CNT_CHANGE = 'OBJ_CNT_CHANGE'
-const ORBITAL_INCL_CHANGE = 'ORBITAL_INCL_CHANGE'
-const PER_ARG_CHANGE = 'PER_ARG_CHANGE'
-const SEMI_MAJ_AXIS_CHANGE = 'SEMI_MAJ_AXIS_CHANGE'
-const ECCENTRICITY_CHANGE = 'ECCENTRICITY_CHANGE'
-const NOD_LONG_CHANGE = 'NOD_LONG_CHANGE'
-const TRUE_ANOMALY_CHANGE = 'TRUE_ANOMALY_CHANGE'
-const BLACK_DEGREE_CHANGE = 'BLACK_DEGREE_CHANGE'
-const LIN_SIZ_CHANGE ='LIN_SIZ_CHANGE'
-const MAS_CHANGE = 'MAS_CHANGE'
-const DRAG_COEF_CHANGE = 'DRAG_COEF_CHANGE'
 const NEW_OBJ_CREATE = 'NEW_OBJ_CREATE'
 const NEW_OBJ_CREATE_CONFIRM = 'NEW_OBJ_CREATE_CONFIRM'
 const CANCEL_CHANGE = 'CANCEL_CHANGE'
+const OBJ_CHANGE = 'OBJ_CHANGE'
 
 let now = new Date()
 
@@ -44,7 +30,7 @@ let objects_obj = {
             semi_maj_axis: 7000,
             eccentricity: 0.5,
             nod_long: 40,
-            true_anomaly: 234,
+            true_anomaly: 34,
             black_degree: 0.5,
             lin_siz: 1243,
             mas: 4.5,
@@ -170,52 +156,82 @@ let objects_obj = {
 }
 objects_obj.cur_obj_id = objects_obj.objects[0].id
 
-const nameIsOk = (name) => {
-    return name !== '';
-}
-const dateTimeIsOk = (date) => {
-    return date instanceof Date;
-}
-const priorityIsOk = (priority) => {
-    return priority >= 1 && Number.isInteger(priority) && priority !== '';
-}
-const planeCntIsOk = (plane_cnt) => {
-    return plane_cnt >= 0 && Number.isInteger(plane_cnt) && plane_cnt !== '';
-}
-const objCntIsOk = (obj_cnt) => {
-    return obj_cnt >= 0 && Number.isInteger(obj_cnt) && obj_cnt !== '';
-}
-const orbitalInclIsOk = (orbital_incl) => {
-    return orbital_incl >= 0 && orbital_incl <= 180 && orbital_incl !== '';
-}
-const perArgIsOk = (per_arg) => {
-    return per_arg >= 0 && per_arg < 360 && per_arg !== '';
-}
-const semiMajAxisIsOk = (semi_maj_axis) => {
-    return semi_maj_axis >= 6480 && semi_maj_axis <= 40000 && semi_maj_axis !== '';
-}
-const eccentricityIsOk = (eccentricity) => {
-    return eccentricity >= 0 && eccentricity <= 1 && eccentricity !== '';
-}
-const nodLongIsOk = (nod_long) => {
-    return nod_long >= 0 && nod_long <= 180 && nod_long !== '';
-}
-const trueAnomalyIsOk = (true_anomaly) => {
-    return true_anomaly >= 0 && true_anomaly <= 180 && true_anomaly !== '';
-}
-const blackDegreeIsOk = (black_degree) => {
-    return black_degree >= 0 && black_degree <= 1 && black_degree !== '';
-}
-const linSizIsOk = (lin_siz) => {
-    return lin_siz >= 0 && lin_siz !== '';
-}
-const masIsOk = (mas) => {
-    return mas > 0 && mas !== '';
-}
-const dragCoefIsOk = (drag_coef) => {
-    return drag_coef >= 0 && drag_coef <= 2 && drag_coef !== '';
+const objIsOk = (obj) => {
+    const notOk = new Set()
+    for (let i in obj) {
+        if (obj[i] === '')
+            notOk.add(i)
+    }
+
+    if (!(obj.date_time instanceof Date)) {
+        notOk.add('date_time')
+    }
+    if (!(obj.priority >= 1 && Number.isInteger(obj.priority))) {
+        notOk.add('priority')
+    }
+    if (!(obj.plane_cnt >= 0 && Number.isInteger(obj.plane_cnt))) {
+        notOk.add('plane_cnt')
+    }
+    if (!(obj.obj_cnt >= 0 && Number.isInteger(obj.obj_cnt))) {
+        notOk.add('obj_cnt')
+    }
+    if (!(obj.orbital_incl >= 0 && obj.orbital_incl <= 180)) {
+        notOk.add('orbital_incl')
+    }
+    if (!(obj.per_arg >= 0 && obj.per_arg < 360 && obj.per_arg !== '')) {
+        notOk.add('per_arg')
+    }
+    if (!(obj.semi_maj_axis >= 6480 && obj.semi_maj_axis <= 40000)) {
+        notOk.add('semi_maj_axis')
+    }
+    if (!(obj.eccentricity >= 0 && obj.eccentricity <= 1)) {
+        notOk.add('eccentricity')
+    }
+    if (!(obj.nod_long >= 0 && obj.nod_long <= 180)) {
+        notOk.add('nod_long')
+    }
+    if (!(obj.true_anomaly >= 0 && obj.true_anomaly <= 180)) {
+        notOk.add('true_anomaly')
+    }
+    if (!(obj.black_degree >= 0 && obj.black_degree <= 1)) {
+        notOk.add('black_degree')
+    }
+    if (!(obj.lin_siz >= 0)) {
+        notOk.add('lin_siz')
+    }
+    if (!(obj.mas > 0)) {
+        notOk.add('mas')
+    }
+    if (!(obj.drag_coef >= 0 && obj.drag_coef <= 2)) {
+        notOk.add('drag_coef')
+    }
+    return notOk
 }
 
+const indexOfCurObjId = (state) => {
+    let obj_index = -1
+    state.objects.forEach((element, index) => {
+        if (element.id === state.cur_obj_id) obj_index = index
+    })
+    return obj_index
+}
+
+const changeAndCheckObjValue = (obj, field_to_change, value_to_change) => {
+    if (['name', 'date_time'].includes(field_to_change)) {
+        obj[field_to_change] = value_to_change
+    } else if (['priority', 'plane_cnt', 'obj_cnt'].includes(field_to_change)) {
+        obj[field_to_change] = parseInt(value_to_change, 10)
+    } else {
+        obj[field_to_change] = parseFloat(value_to_change)
+    }
+
+    obj.wrong_values = new Set(obj.wrong_values)
+    if (objIsOk(obj).has(field_to_change))
+        obj.wrong_values.add(field_to_change)
+    else
+        obj.wrong_values.delete(field_to_change)
+    return obj
+}
 
 const Reducer = (state = objects_obj, action) => {
     switch (action.type) {
@@ -225,10 +241,8 @@ const Reducer = (state = objects_obj, action) => {
                 cur_obj_id: action.id,
                 obj_info: {...state.obj_info}
             }
-            let obj_index
-            state_copy.objects.forEach((element, index) => {
-                if (element.id === state_copy.cur_obj_id) obj_index = index
-            })
+
+            let obj_index = indexOfCurObjId(state_copy)
             if (state_copy.objects[obj_index].is_temporary === true)
                 state_copy.obj_info.create_mod = 1
             else
@@ -254,10 +268,7 @@ const Reducer = (state = objects_obj, action) => {
                 ...state,
                 obj_info: {...state.obj_info}
             }
-            let obj_index
-            state_copy.objects.forEach((element, index) => {
-                if (element.id === state_copy.cur_obj_id) obj_index = index
-            })
+            let obj_index = indexOfCurObjId(state_copy)
             state_copy.temporary_obj = {...state.objects[obj_index]}
             state_copy.temporary_obj.wrong_values = new Set(state.objects[obj_index].wrong_values)
 
@@ -275,10 +286,7 @@ const Reducer = (state = objects_obj, action) => {
                 objects: [...state.objects],
                 obj_info: {...state.obj_info}
             }
-            let obj_index
-            state_copy.objects.forEach((element, index) => {
-                if (element.id === action.id) obj_index = index
-            })
+            let obj_index = indexOfCurObjId(state_copy)
             state_copy.objects.splice(obj_index, 1)
             if (obj_index > 0) {
                 state_copy.cur_obj_id = state_copy.objects[obj_index - 1].id
@@ -299,10 +307,7 @@ const Reducer = (state = objects_obj, action) => {
                 objects: [...state.objects],
                 obj_info: {...state.obj_info}
             }
-            let obj_index
-            state_copy.objects.forEach((element, index) => {
-                if (element.id === state_copy.cur_obj_id) obj_index = index
-            })
+            let obj_index = indexOfCurObjId(state_copy)
             if (state_copy.temporary_obj.wrong_values.size === 0) {
                 state_copy.objects[obj_index] = {...state.objects[obj_index]}
                 state_copy.objects[obj_index] = state_copy.temporary_obj
@@ -310,517 +315,6 @@ const Reducer = (state = objects_obj, action) => {
                 return state_copy
             } else
                 return state
-        }
-        case NAME_CHANGE: {
-            let obj_index
-            state.objects.forEach((element, index) => {
-                if (element.id === state.cur_obj_id) obj_index = index
-            })
-            if (state.objects[obj_index].is_temporary === true) {
-                let state_copy = {
-                    ...state,
-                    objects: [...state.objects]
-                }
-                state_copy.objects[obj_index] = {...state.objects[obj_index]}
-                state_copy.objects[obj_index].name = action.name
-
-                state_copy.objects[obj_index].wrong_values = new Set(state.objects[obj_index].wrong_values)
-                if (!nameIsOk(state_copy.objects[obj_index].name))
-                    state_copy.objects[obj_index].wrong_values.add('name')
-                else
-                    state_copy.objects[obj_index].wrong_values.delete('name')
-                return state_copy
-            } else {
-                let state_copy = {
-                    ...state,
-                    temporary_obj: {...state.temporary_obj}
-                }
-                state_copy.temporary_obj.name = action.name
-
-                state_copy.temporary_obj.wrong_values = new Set(state.temporary_obj.wrong_values)
-                if (!nameIsOk(state_copy.temporary_obj.name))
-                    state_copy.temporary_obj.wrong_values.add('name')
-                else
-                    state_copy.temporary_obj.wrong_values.delete('name')
-                return state_copy
-            }
-        }
-        case DATE_TIME_CHANGE: {
-            let obj_index
-            state.objects.forEach((element, index) => {
-                if (element.id === state.cur_obj_id) obj_index = index
-            })
-            if (state.objects[obj_index].is_temporary === true) {
-                let state_copy = {
-                    ...state,
-                    objects: [...state.objects]
-                }
-                state_copy.objects[obj_index] = {...state.objects[obj_index]}
-                state_copy.objects[obj_index].date_time = action.date_time
-
-                state_copy.objects[obj_index].wrong_values = new Set(state.objects[obj_index].wrong_values)
-                if (!dateTimeIsOk(state_copy.objects[obj_index].date_time))
-                    state_copy.objects[obj_index].wrong_values.add('date_time')
-                else
-                    state_copy.objects[obj_index].wrong_values.delete('date_time')
-                return state_copy
-            } else {
-                let state_copy = {
-                    ...state,
-                    temporary_obj: {...state.temporary_obj}
-                }
-                state_copy.temporary_obj.date_time = action.date_time
-
-                state_copy.temporary_obj.wrong_values = new Set(state.temporary_obj.wrong_values)
-                if (!dateTimeIsOk(state_copy.temporary_obj.date_time))
-                    state_copy.temporary_obj.wrong_values.add('date_time')
-                else
-                    state_copy.temporary_obj.wrong_values.delete('date_time')
-                return state_copy
-            }
-        }
-        case PRIORITY_CHANGE: {
-            let obj_index
-            state.objects.forEach((element, index) => {
-                if (element.id === state.cur_obj_id) obj_index = index
-            })
-            if (state.objects[obj_index].is_temporary === true) {
-                let state_copy = {
-                    ...state,
-                    objects: [...state.objects]
-                }
-                state_copy.objects[obj_index] = {...state.objects[obj_index]}
-                state_copy.objects[obj_index].priority = parseInt(action.priority, 10)
-
-
-                state_copy.objects[obj_index].wrong_values = new Set(state.objects[obj_index].wrong_values)
-                if (!priorityIsOk(state_copy.objects[obj_index].priority))
-                    state_copy.objects[obj_index].wrong_values.add('priority')
-                else
-                    state_copy.objects[obj_index].wrong_values.delete('priority')
-                return state_copy
-            } else {
-                let state_copy = {
-                    ...state,
-                    temporary_obj: {...state.temporary_obj}
-                }
-                state_copy.temporary_obj.priority = parseInt(action.priority, 10)
-
-                state_copy.temporary_obj.wrong_values = new Set(state.temporary_obj.wrong_values)
-                if (!priorityIsOk(state_copy.temporary_obj.priority))
-                    state_copy.temporary_obj.wrong_values.add('priority')
-                else
-                    state_copy.temporary_obj.wrong_values.delete('priority')
-                return state_copy
-            }
-        }
-        case PLANE_CNT_CHANGE: {
-            let obj_index
-            state.objects.forEach((element, index) => {
-                if (element.id === state.cur_obj_id) obj_index = index
-            })
-            if (state.objects[obj_index].is_temporary === true) {
-                let state_copy = {
-                    ...state,
-                    objects: [...state.objects]
-                }
-                state_copy.objects[obj_index] = {...state.objects[obj_index]}
-                state_copy.objects[obj_index].plane_cnt = parseInt(action.plane_cnt, 10)
-
-                state_copy.objects[obj_index].wrong_values = new Set(state.objects[obj_index].wrong_values)
-                if (!planeCntIsOk(state_copy.objects[obj_index].plane_cnt))
-                    state_copy.objects[obj_index].wrong_values.add('plane_cnt')
-                else
-                    state_copy.objects[obj_index].wrong_values.delete('plane_cnt')
-                return state_copy
-            } else {
-                let state_copy = {
-                    ...state,
-                    temporary_obj: {...state.temporary_obj}
-                }
-                state_copy.temporary_obj.plane_cnt = parseInt(action.plane_cnt, 10)
-
-                state_copy.temporary_obj.wrong_values = new Set(state.temporary_obj.wrong_values)
-                if (!planeCntIsOk(state_copy.temporary_obj.plane_cnt))
-                    state_copy.temporary_obj.wrong_values.add('plane_cnt')
-                else
-                    state_copy.temporary_obj.wrong_values.delete('plane_cnt')
-                return state_copy
-            }
-        }
-        case OBJ_CNT_CHANGE: {
-            let obj_index
-            state.objects.forEach((element, index) => {
-                if (element.id === state.cur_obj_id) obj_index = index
-            })
-            if (state.objects[obj_index].is_temporary === true) {
-                let state_copy = {
-                    ...state,
-                    objects: [...state.objects]
-                }
-                state_copy.objects[obj_index] = {...state.objects[obj_index]}
-                state_copy.objects[obj_index].obj_cnt = parseInt(action.obj_cnt, 10)
-
-                state_copy.objects[obj_index].wrong_values = new Set(state.objects[obj_index].wrong_values)
-                if (!objCntIsOk(state_copy.objects[obj_index].obj_cnt))
-                    state_copy.objects[obj_index].wrong_values.add('obj_cnt')
-                else
-                    state_copy.objects[obj_index].wrong_values.delete('obj_cnt')
-                return state_copy
-            } else {
-                let state_copy = {
-                    ...state,
-                    temporary_obj: {...state.temporary_obj}
-                }
-                state_copy.temporary_obj.obj_cnt = parseInt(action.obj_cnt, 10)
-
-                state_copy.temporary_obj.wrong_values = new Set(state.temporary_obj.wrong_values)
-                if (!objCntIsOk(state_copy.temporary_obj.obj_cnt))
-                    state_copy.temporary_obj.wrong_values.add('obj_cnt')
-                else
-                    state_copy.temporary_obj.wrong_values.delete('obj_cnt')
-                return state_copy
-            }
-        }
-        case ORBITAL_INCL_CHANGE: {
-            let obj_index
-            state.objects.forEach((element, index) => {
-                if (element.id === state.cur_obj_id) obj_index = index
-            })
-            if (state.objects[obj_index].is_temporary === true) {
-                let state_copy = {
-                    ...state,
-                    objects: [...state.objects]
-                }
-                state_copy.objects[obj_index] = {...state.objects[obj_index]}
-                state_copy.objects[obj_index].orbital_incl = parseFloat(action.orbital_incl)
-
-                state_copy.objects[obj_index].wrong_values = new Set(state.objects[obj_index].wrong_values)
-                if (!orbitalInclIsOk(state_copy.objects[obj_index].orbital_incl))
-                    state_copy.objects[obj_index].wrong_values.add('orbital_incl')
-                else
-                    state_copy.objects[obj_index].wrong_values.delete('orbital_incl')
-                return state_copy
-            } else {
-                let state_copy = {
-                    ...state,
-                    temporary_obj: {...state.temporary_obj}
-                }
-                state_copy.temporary_obj.orbital_incl = parseFloat(action.orbital_incl)
-
-                state_copy.temporary_obj.wrong_values = new Set(state.temporary_obj.wrong_values)
-                if (!orbitalInclIsOk(state_copy.temporary_obj.orbital_incl))
-                    state_copy.temporary_obj.wrong_values.add('orbital_incl')
-                else
-                    state_copy.temporary_obj.wrong_values.delete('orbital_incl')
-                return state_copy
-            }
-        }
-        case PER_ARG_CHANGE: {
-            let obj_index
-            state.objects.forEach((element, index) => {
-                if (element.id === state.cur_obj_id) obj_index = index
-            })
-            if (state.objects[obj_index].is_temporary === true) {
-                let state_copy = {
-                    ...state,
-                    objects: [...state.objects]
-                }
-                state_copy.objects[obj_index] = {...state.objects[obj_index]}
-                state_copy.objects[obj_index].per_arg = parseFloat(action.per_arg)
-
-                state_copy.objects[obj_index].wrong_values = new Set(state.objects[obj_index].wrong_values)
-                if (!perArgIsOk(state_copy.objects[obj_index].per_arg))
-                    state_copy.objects[obj_index].wrong_values.add('per_arg')
-                else
-                    state_copy.objects[obj_index].wrong_values.delete('per_arg')
-                return state_copy
-            } else {
-                let state_copy = {
-                    ...state,
-                    temporary_obj: {...state.temporary_obj}
-                }
-                state_copy.temporary_obj.per_arg = parseFloat(action.per_arg)
-
-                state_copy.temporary_obj.wrong_values = new Set(state.temporary_obj.wrong_values)
-                if (!perArgIsOk(state_copy.temporary_obj.per_arg))
-                    state_copy.temporary_obj.wrong_values.add('per_arg')
-                else
-                    state_copy.temporary_obj.wrong_values.delete('per_arg')
-                return state_copy
-            }
-        }
-        case SEMI_MAJ_AXIS_CHANGE: {
-            let obj_index
-            state.objects.forEach((element, index) => {
-                if (element.id === state.cur_obj_id) obj_index = index
-            })
-            if (state.objects[obj_index].is_temporary === true) {
-                let state_copy = {
-                    ...state,
-                    objects: [...state.objects]
-                }
-                state_copy.objects[obj_index] = {...state.objects[obj_index]}
-                state_copy.objects[obj_index].semi_maj_axis = parseFloat(action.semi_maj_axis)
-
-                state_copy.objects[obj_index].wrong_values = new Set(state.objects[obj_index].wrong_values)
-                if (!semiMajAxisIsOk(state_copy.objects[obj_index].semi_maj_axis))
-                    state_copy.objects[obj_index].wrong_values.add('semi_maj_axis')
-                else
-                    state_copy.objects[obj_index].wrong_values.delete('semi_maj_axis')
-                return state_copy
-            } else {
-                let state_copy = {
-                    ...state,
-                    temporary_obj: {...state.temporary_obj}
-                }
-                state_copy.temporary_obj.semi_maj_axis = parseFloat(action.semi_maj_axis)
-
-                state_copy.temporary_obj.wrong_values = new Set(state.temporary_obj.wrong_values)
-                if (!semiMajAxisIsOk(state_copy.temporary_obj.semi_maj_axis))
-                    state_copy.temporary_obj.wrong_values.add('semi_maj_axis')
-                else
-                    state_copy.temporary_obj.wrong_values.delete('semi_maj_axis')
-                return state_copy
-            }
-        }
-        case ECCENTRICITY_CHANGE: {
-            let obj_index
-            state.objects.forEach((element, index) => {
-                if (element.id === state.cur_obj_id) obj_index = index
-            })
-            if (state.objects[obj_index].is_temporary === true) {
-                let state_copy = {
-                    ...state,
-                    objects: [...state.objects]
-                }
-                state_copy.objects[obj_index] = {...state.objects[obj_index]}
-                state_copy.objects[obj_index].eccentricity = parseFloat(action.eccentricity)
-
-                state_copy.objects[obj_index].wrong_values = new Set(state.objects[obj_index].wrong_values)
-                if (!eccentricityIsOk(state_copy.objects[obj_index].eccentricity))
-                    state_copy.objects[obj_index].wrong_values.add('eccentricity')
-                else
-                    state_copy.objects[obj_index].wrong_values.delete('eccentricity')
-                return state_copy
-            } else {
-                let state_copy = {
-                    ...state,
-                    temporary_obj: {...state.temporary_obj}
-                }
-                state_copy.temporary_obj.eccentricity = parseFloat(action.eccentricity)
-
-                state_copy.temporary_obj.wrong_values = new Set(state.temporary_obj.wrong_values)
-                if (!eccentricityIsOk(state_copy.temporary_obj.eccentricity))
-                    state_copy.temporary_obj.wrong_values.add('eccentricity')
-                else
-                    state_copy.temporary_obj.wrong_values.delete('eccentricity')
-                return state_copy
-            }
-        }
-        case NOD_LONG_CHANGE: {
-            let obj_index
-            state.objects.forEach((element, index) => {
-                if (element.id === state.cur_obj_id) obj_index = index
-            })
-            if (state.objects[obj_index].is_temporary === true) {
-                let state_copy = {
-                    ...state,
-                    objects: [...state.objects]
-                }
-                state_copy.objects[obj_index] = {...state.objects[obj_index]}
-                state_copy.objects[obj_index].nod_long = parseFloat(action.nod_long)
-
-                state_copy.objects[obj_index].wrong_values = new Set(state.objects[obj_index].wrong_values)
-                if (!nodLongIsOk(state_copy.objects[obj_index].nod_long))
-                    state_copy.objects[obj_index].wrong_values.add('nod_long')
-                else
-                    state_copy.objects[obj_index].wrong_values.delete('nod_long')
-                return state_copy
-            } else {
-                let state_copy = {
-                    ...state,
-                    temporary_obj: {...state.temporary_obj}
-                }
-                state_copy.temporary_obj.nod_long = parseFloat(action.nod_long)
-
-                state_copy.temporary_obj.wrong_values = new Set(state.temporary_obj.wrong_values)
-                if (!nodLongIsOk(state_copy.temporary_obj.nod_long))
-                    state_copy.temporary_obj.wrong_values.add('nod_long')
-                else
-                    state_copy.temporary_obj.wrong_values.delete('nod_long')
-                return state_copy
-            }
-        }
-        case TRUE_ANOMALY_CHANGE: {
-            let obj_index
-            state.objects.forEach((element, index) => {
-                if (element.id === state.cur_obj_id) obj_index = index
-            })
-            if (state.objects[obj_index].is_temporary === true) {
-                let state_copy = {
-                    ...state,
-                    objects: [...state.objects]
-                }
-                state_copy.objects[obj_index] = {...state.objects[obj_index]}
-                state_copy.objects[obj_index].true_anomaly = parseFloat(action.true_anomaly)
-
-                state_copy.objects[obj_index].wrong_values = new Set(state.objects[obj_index].wrong_values)
-                if (!trueAnomalyIsOk(state_copy.objects[obj_index].true_anomaly))
-                    state_copy.objects[obj_index].wrong_values.add('true_anomaly')
-                else
-                    state_copy.objects[obj_index].wrong_values.delete('true_anomaly')
-                return state_copy
-            } else {
-                let state_copy = {
-                    ...state,
-                    temporary_obj: {...state.temporary_obj}
-                }
-                state_copy.temporary_obj.true_anomaly = parseFloat(action.true_anomaly)
-
-                state_copy.temporary_obj.wrong_values = new Set(state.temporary_obj.wrong_values)
-                if (!trueAnomalyIsOk(state_copy.temporary_obj.true_anomaly))
-                    state_copy.temporary_obj.wrong_values.add('true_anomaly')
-                else
-                    state_copy.temporary_obj.wrong_values.delete('true_anomaly')
-                return state_copy
-            }
-        }
-        case BLACK_DEGREE_CHANGE: {
-            let obj_index
-            state.objects.forEach((element, index) => {
-                if (element.id === state.cur_obj_id) obj_index = index
-            })
-            if (state.objects[obj_index].is_temporary === true) {
-                let state_copy = {
-                    ...state,
-                    objects: [...state.objects]
-                }
-                state_copy.objects[obj_index] = {...state.objects[obj_index]}
-                state_copy.objects[obj_index].black_degree = parseFloat(action.black_degree)
-
-                state_copy.objects[obj_index].wrong_values = new Set(state.objects[obj_index].wrong_values)
-                if (!blackDegreeIsOk(state_copy.objects[obj_index].black_degree))
-                    state_copy.objects[obj_index].wrong_values.add('black_degree')
-                else
-                    state_copy.objects[obj_index].wrong_values.delete('black_degree')
-                return state_copy
-            } else {
-                let state_copy = {
-                    ...state,
-                    temporary_obj: {...state.temporary_obj}
-                }
-                state_copy.temporary_obj.black_degree = parseFloat(action.black_degree)
-
-                state_copy.temporary_obj.wrong_values = new Set(state.temporary_obj.wrong_values)
-                if (!blackDegreeIsOk(state_copy.temporary_obj.black_degree))
-                    state_copy.temporary_obj.wrong_values.add('black_degree')
-                else
-                    state_copy.temporary_obj.wrong_values.delete('black_degree')
-                return state_copy
-            }
-        }
-        case LIN_SIZ_CHANGE: {
-            let obj_index
-            state.objects.forEach((element, index) => {
-                if (element.id === state.cur_obj_id) obj_index = index
-            })
-            if (state.objects[obj_index].is_temporary === true) {
-                let state_copy = {
-                    ...state,
-                    objects: [...state.objects]
-                }
-                state_copy.objects[obj_index] = {...state.objects[obj_index]}
-                state_copy.objects[obj_index].lin_siz = parseFloat(action.lin_siz)
-
-                state_copy.objects[obj_index].wrong_values = new Set(state.objects[obj_index].wrong_values)
-                if (!linSizIsOk(state_copy.objects[obj_index].lin_siz))
-                    state_copy.objects[obj_index].wrong_values.add('lin_siz')
-                else
-                    state_copy.objects[obj_index].wrong_values.delete('lin_siz')
-                return state_copy
-            } else {
-                let state_copy = {
-                    ...state,
-                    temporary_obj: {...state.temporary_obj}
-                }
-                state_copy.temporary_obj.lin_siz = parseFloat(action.lin_siz)
-
-                state_copy.temporary_obj.wrong_values = new Set(state.temporary_obj.wrong_values)
-                if (!linSizIsOk(state_copy.temporary_obj.lin_siz))
-                    state_copy.temporary_obj.wrong_values.add('lin_siz')
-                else
-                    state_copy.temporary_obj.wrong_values.delete('lin_siz')
-                return state_copy
-            }
-        }
-        case MAS_CHANGE: {
-            let obj_index
-            state.objects.forEach((element, index) => {
-                if (element.id === state.cur_obj_id) obj_index = index
-            })
-            if (state.objects[obj_index].is_temporary === true) {
-                let state_copy = {
-                    ...state,
-                    objects: [...state.objects]
-                }
-                state_copy.objects[obj_index] = {...state.objects[obj_index]}
-                state_copy.objects[obj_index].mas = parseFloat(action.mas)
-
-                state_copy.objects[obj_index].wrong_values = new Set(state.objects[obj_index].wrong_values)
-                if (!masIsOk(state_copy.objects[obj_index].mas))
-                    state_copy.objects[obj_index].wrong_values.add('mas')
-                else
-                    state_copy.objects[obj_index].wrong_values.delete('mas')
-                return state_copy
-            } else {
-                let state_copy = {
-                    ...state,
-                    temporary_obj: {...state.temporary_obj}
-                }
-                state_copy.temporary_obj.mas = parseFloat(action.mas)
-
-                state_copy.temporary_obj.wrong_values = new Set(state.temporary_obj.wrong_values)
-                if (!masIsOk(state_copy.temporary_obj.mas))
-                    state_copy.temporary_obj.wrong_values.add('mas')
-                else
-                    state_copy.temporary_obj.wrong_values.delete('mas')
-                return state_copy
-            }
-        }
-        case DRAG_COEF_CHANGE: {
-            let obj_index
-            state.objects.forEach((element, index) => {
-                if (element.id === state.cur_obj_id) obj_index = index
-            })
-            if (state.objects[obj_index].is_temporary === true) {
-                let state_copy = {
-                    ...state,
-                    objects: [...state.objects]
-                }
-                state_copy.objects[obj_index] = {...state.objects[obj_index]}
-                state_copy.objects[obj_index].drag_coef = parseFloat(action.drag_coef)
-
-                state_copy.objects[obj_index].wrong_values = new Set(state.objects[obj_index].wrong_values)
-                if (!dragCoefIsOk(state_copy.objects[obj_index].drag_coef))
-                    state_copy.objects[obj_index].wrong_values.add('drag_coef')
-                else
-                    state_copy.objects[obj_index].wrong_values.delete('drag_coef')
-                return state_copy
-            } else {
-                let state_copy = {
-                    ...state,
-                    temporary_obj: {...state.temporary_obj}
-                }
-                state_copy.temporary_obj.drag_coef = parseFloat(action.drag_coef)
-
-                state_copy.temporary_obj.wrong_values = new Set(state.temporary_obj.wrong_values)
-                if (!dragCoefIsOk(state_copy.temporary_obj.drag_coef))
-                    state_copy.temporary_obj.wrong_values.add('drag_coef')
-                else
-                    state_copy.temporary_obj.wrong_values.delete('drag_coef')
-                return state_copy
-            }
         }
         case NEW_OBJ_CREATE: {
             let state_copy = {
@@ -857,10 +351,7 @@ const Reducer = (state = objects_obj, action) => {
             return state_copy
         }
         case NEW_OBJ_CREATE_CONFIRM: {
-            let obj_index
-            state.objects.forEach((element, index) => {
-                if (element.id === state.cur_obj_id) obj_index = index
-            })
+            let obj_index = indexOfCurObjId(state)
 
             let state_copy = {
                 ...state,
@@ -870,56 +361,14 @@ const Reducer = (state = objects_obj, action) => {
             state_copy.objects[obj_index] = {...state.objects[obj_index]}
             state_copy.objects[obj_index].wrong_values = new Set(state.objects[obj_index].wrong_values)
 
-            if (nameIsOk(state.objects[obj_index].name))
-                if (dateTimeIsOk(state.objects[obj_index].date_time))
-                    if (priorityIsOk(state.objects[obj_index].priority))
-                        if (planeCntIsOk(state.objects[obj_index].plane_cnt))
-                            if (objCntIsOk(state.objects[obj_index].obj_cnt))
-                                if (orbitalInclIsOk(state.objects[obj_index].orbital_incl))
-                                    if (perArgIsOk(state.objects[obj_index].per_arg))
-                                        if (semiMajAxisIsOk(state.objects[obj_index].semi_maj_axis))
-                                            if (eccentricityIsOk(state.objects[obj_index].eccentricity))
-                                                if (nodLongIsOk(state.objects[obj_index].nod_long))
-                                                    if (trueAnomalyIsOk(state.objects[obj_index].true_anomaly))
-                                                        if (blackDegreeIsOk(state.objects[obj_index].black_degree))
-                                                            if (linSizIsOk(state.objects[obj_index].lin_siz))
-                                                                if (masIsOk(state.objects[obj_index].mas))
-                                                                    if (dragCoefIsOk(state.objects[obj_index].drag_coef)) {
-                                                                        delete state_copy.objects[obj_index].is_temporary
-                                                                        state_copy.obj_info.create_mod = 0
-                                                                        state_copy.obj_info.edit_mod = 0
-                                                                        state_copy.obj_info.delete_warn = 0
-                                                                    }
-                                                                    else
-                                                                        state_copy.objects[obj_index].wrong_values.add('drag_coef')
-                                                                else
-                                                                    state_copy.objects[obj_index].wrong_values.add('mas')
-                                                            else
-                                                                state_copy.objects[obj_index].wrong_values.add('lin_siz')
-                                                        else
-                                                            state_copy.objects[obj_index].wrong_values.add('black_degree')
-                                                    else
-                                                        state_copy.objects[obj_index].wrong_values.add('true_anomaly')
-                                                else
-                                                    state_copy.objects[obj_index].wrong_values.add('nod_long')
-                                            else
-                                                state_copy.objects[obj_index].wrong_values.add('eccentricity')
-                                        else
-                                            state_copy.objects[obj_index].wrong_values.add('semi_maj_axis')
-                                    else
-                                        state_copy.objects[obj_index].wrong_values.add('per_arg')
-                                else
-                                    state_copy.objects[obj_index].wrong_values.add('orbital_incl')
-                            else
-                                state_copy.objects[obj_index].wrong_values.add('obj_cnt')
-                        else
-                            state_copy.objects[obj_index].wrong_values.add('plane_cnt')
-                    else
-                        state_copy.objects[obj_index].wrong_values.add('priority')
-                else
-                    state_copy.objects[obj_index].wrong_values.add('date_time')
-            else
-                state_copy.objects[obj_index].wrong_values.add('name')
+            if (objIsOk(state.objects[obj_index]).size === 0) {
+                delete state_copy.objects[obj_index].is_temporary
+                state_copy.obj_info.create_mod = 0
+                state_copy.obj_info.edit_mod = 0
+                state_copy.obj_info.delete_warn = 0
+            } else {
+                state_copy.objects[obj_index].wrong_values = new Set(objIsOk(state.objects[obj_index]))
+            }
 
             return state_copy
         }
@@ -929,6 +378,31 @@ const Reducer = (state = objects_obj, action) => {
                 obj_info: {...state.obj_info}
             }
             state_copy.obj_info.edit_mod = 0
+            return state_copy
+        }
+        case OBJ_CHANGE: {
+
+            const field_to_change = action.obj_field_change.field_name
+            const value_to_change = action.obj_field_change.field_value
+            let state_copy
+            let obj_index = indexOfCurObjId(state)
+
+            if (state.objects[obj_index].is_temporary === true) {
+                state_copy = {
+                    ...state,
+                    objects: [...state.objects]
+                }
+                state_copy.objects[obj_index] = {...state.objects[obj_index]}
+
+                state_copy.objects[obj_index] = changeAndCheckObjValue(state_copy.objects[obj_index], field_to_change, value_to_change)
+            } else {
+                state_copy = {
+                    ...state,
+                    temporary_obj: {...state.temporary_obj}
+                }
+
+                state_copy.temporary_obj = changeAndCheckObjValue(state_copy.temporary_obj, field_to_change, value_to_change)
+            }
             return state_copy
         }
         default:
@@ -941,24 +415,13 @@ export const delWarnChangeAC = () => ({type: DELETE_WARN_CHANGE})
 export const editModChangeAC = () => ({type: EDIT_MOD_CHANGE})
 export const deleteObjAC = (id) => ({type: DELETE_OBJ, id: id})
 export const saveChangeAC = () => ({type: SAVE_CHANGE})
-export const nameChangeAC = (name) => ({type: NAME_CHANGE, name: name})
-export const dateTimeChangeAC = (date_time) => ({type: DATE_TIME_CHANGE, date_time: date_time})
-export const priorityChangeAC = (priority) => ({type: PRIORITY_CHANGE, priority: priority})
-export const planeCntChangeAC = (plane_cnt) => ({type: PLANE_CNT_CHANGE, plane_cnt: plane_cnt})
-export const objCntChangeAC = (obj_cnt) => ({type: OBJ_CNT_CHANGE, obj_cnt: obj_cnt})
-export const orbitalInclChangeAC = (orbital_incl) => ({type: ORBITAL_INCL_CHANGE, orbital_incl: orbital_incl})
-export const perArgChangeAC = (per_arg) => ({type: PER_ARG_CHANGE, per_arg: per_arg})
-export const semiMajAxisChangeAC = (semi_maj_axis) => ({type: SEMI_MAJ_AXIS_CHANGE, semi_maj_axis: semi_maj_axis})
-export const eccentricityChangeAC = (eccentricity) => ({type: ECCENTRICITY_CHANGE, eccentricity: eccentricity})
-export const nodLongChangeAC = (nod_long) => ({type: NOD_LONG_CHANGE, nod_long: nod_long})
-export const trueAnomalyChangeAC = (true_anomaly) => ({type: TRUE_ANOMALY_CHANGE, true_anomaly: true_anomaly})
-export const blackDegreeChangeAC = (black_degree) => ({type: BLACK_DEGREE_CHANGE, black_degree: black_degree})
-export const linSizChangeAC = (lin_siz) => ({type: LIN_SIZ_CHANGE, lin_siz: lin_siz})
-export const masChangeAC = (mas) => ({type: MAS_CHANGE, mas: mas})
-export const dragCoefChangeAC = (drag_coef) => ({type: DRAG_COEF_CHANGE, drag_coef: drag_coef})
 export const newObjCreateAC = () => ({type: NEW_OBJ_CREATE})
 export const newObjCreateConfirmAC = () => ({type: NEW_OBJ_CREATE_CONFIRM})
 export const cancelChangeAC = () => ({type: CANCEL_CHANGE})
+export const objChangeAC = (field_name, field_value) => ({type: OBJ_CHANGE, obj_field_change: {
+        field_name: field_name,
+        field_value: field_value
+}})
 
 
 export default Reducer

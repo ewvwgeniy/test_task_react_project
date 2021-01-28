@@ -3,7 +3,6 @@ import s from './ObjectInfo.module.css'
 import classnames from 'classnames'
 import {SvgIcon} from "@material-ui/core"
 import warning from "@material-ui/icons/ErrorOutline"
-import {cancelChangeAC} from "../../../../Redux/Reducer";
 
 const ObjectInfo = (props) => {
 //////////////////// условие если приходит пустой объект    ////////////////////
@@ -12,9 +11,8 @@ const ObjectInfo = (props) => {
     }
 ////////////////////    проверка элемента      ////////////////////
     const isUndefined = (obj) => {
-        if (typeof obj === "undefined")
-            return true
-        return false
+        return typeof obj === "undefined"
+
     }
 ////////////////////    преобразование даты в строку    ////////////////////
     let date = ''
@@ -54,16 +52,16 @@ const ObjectInfo = (props) => {
             seconds = `${seconds}`
         }
 
-        let mili_seconds = props.obj.date_time.getMilliseconds()
-        if (mili_seconds < 100) {
-            mili_seconds = `0${mili_seconds}`
-        } else if (mili_seconds < 10) {
-            mili_seconds = `0${mili_seconds}`
+        let milli_seconds = props.obj.date_time.getMilliseconds()
+        if (milli_seconds < 100) {
+            milli_seconds = `0${milli_seconds}`
+        } else if (milli_seconds < 10) {
+            milli_seconds = `0${milli_seconds}`
         } else {
-            mili_seconds = `${mili_seconds}`
+            milli_seconds = `${milli_seconds}`
         }
 
-        date = `${props.obj.date_time.getFullYear()}-${month}-${date_1_31}T${hours}:${minutes}:${seconds}.${mili_seconds}`
+        date = `${props.obj.date_time.getFullYear()}-${month}-${date_1_31}T${hours}:${minutes}:${seconds}.${milli_seconds}`
     }
 ////////////////////    уведомления при создании объекта /// кнопка ОТМЕНА   ////////////////////
     let cancelChange = () => {
@@ -151,7 +149,7 @@ const ObjectInfo = (props) => {
     let name = React.createRef()
     let nameChange = () => {
         if (props.edit_mod === 1 || props.create_mod === 1) {
-            props.nameChangeAC(name.current.value)
+            props.objChangeAC('name', name.current.value)
         }
     }
 ////////////////////    событие при изменении даты     ////////////////////
@@ -166,98 +164,99 @@ const ObjectInfo = (props) => {
             d.setMinutes(parseInt(date_time.current.value.split(':')[1], 10))
             d.setSeconds(parseInt(date_time.current.value.split(':')[2].split('.')[0], 10))
             d.setMilliseconds(parseInt(date_time.current.value.split('.')[1], 10))
-            props.dateTimeChangeAC(d)
+            props.objChangeAC('date_time', d)
         }
     }
 ////////////////////    событие при изменении приоритета      ////////////////////
     let priority = React.createRef()
     let priorityChange = () => {
         if (props.edit_mod === 1 || props.create_mod === 1) {
-            props.priorityChangeAC(priority.current.value)
+            props.objChangeAC('priority', priority.current.value)
         }
     }
 ////////////////////    событие при изменении кол-ва плоскостей      ////////////////////
     let plane_cnt = React.createRef()
     let planeCntChange = () => {
         if (props.edit_mod === 1 || props.create_mod === 1) {
-            props.planeCntChangeAC(plane_cnt.current.value)
+            props.objChangeAC('plane_cnt', plane_cnt.current.value)
         }
     }
 ////////////////////    событие при изменении кол-ва объектов на плоскости      ////////////////////
     let obj_cnt = React.createRef()
     let objCntChange = () => {
         if (props.edit_mod === 1 || props.create_mod === 1) {
-            props.objCntChangeAC(obj_cnt.current.value)
+            props.objChangeAC('obj_cnt', obj_cnt.current.value)
         }
     }
 ////////////////////    событие при изменении наклонения орбиты      ////////////////////
     let orbital_incl = React.createRef()
     let orbitalInclChange = () => {
         if (props.edit_mod === 1 || props.create_mod === 1) {
-            props.orbitalInclChangeAC(orbital_incl.current.value)
+            props.objChangeAC('orbital_incl', orbital_incl.current.value)
         }
     }
 ////////////////////    событие при изменении аргумента перицентра      ////////////////////
     let per_arg = React.createRef()
     let perArgChange = () => {
         if (props.edit_mod === 1 || props.create_mod === 1) {
-            props.perArgChangeAC(per_arg.current.value)
+            props.objChangeAC('per_arg', per_arg.current.value)
         }
     }
 ////////////////////    событие при изменении большой полуоси      ////////////////////
     let semi_maj_axis = React.createRef()
     let semiMajAxisChange = () => {
         if (props.edit_mod === 1 || props.create_mod === 1) {
-            props.semiMajAxisChangeAC(semi_maj_axis.current.value)
+            props.objChangeAC('semi_maj_axis', semi_maj_axis.current.value)
         }
     }
 ////////////////////    событие при изменении эксцентриситета      ////////////////////
     let eccentricity = React.createRef()
     let eccentricityChange = () => {
         if (props.edit_mod === 1 || props.create_mod === 1) {
-            props.eccentricityChangeAC(eccentricity.current.value)
+            props.objChangeAC('eccentricity', eccentricity.current.value)
         }
     }
 ////////////////////    событие при изменении долготы восходящего узла      ////////////////////
     let nod_long = React.createRef()
     let nodLongChange = () => {
         if (props.edit_mod === 1 || props.create_mod === 1) {
-            props.nodLongChangeAC(nod_long.current.value)
+            props.objChangeAC('nod_long', nod_long.current.value)
         }
     }
 ////////////////////    событие при изменении истинной аномалии      ////////////////////
     let true_anomaly = React.createRef()
     let trueAnomalyChange = () => {
         if (props.edit_mod === 1 || props.create_mod === 1) {
-            props.trueAnomalyChangeAC(true_anomaly.current.value)
+            //props.trueAnomalyChangeAC(true_anomaly.current.value)
+            props.objChangeAC('true_anomaly', true_anomaly.current.value)
         }
     }
 ////////////////////    событие при изменении степени черноты      ////////////////////
     let black_degree = React.createRef()
     let blackDegreeChange = () => {
         if (props.edit_mod === 1 || props.create_mod === 1) {
-            props.blackDegreeChangeAC(black_degree.current.value)
+            props.objChangeAC('black_degree', black_degree.current.value)
         }
     }
 ////////////////////    событие при изменении линейного размера      ////////////////////
     let lin_siz = React.createRef()
     let linSizChange = () => {
         if (props.edit_mod === 1 || props.create_mod === 1) {
-            props.linSizChangeAC(lin_siz.current.value)
+            props.objChangeAC('lin_siz', lin_siz.current.value)
         }
     }
 ////////////////////    событие при изменении массы       ////////////////////
     let mas = React.createRef()
     let masChange = () => {
         if (props.edit_mod === 1 || props.create_mod === 1) {
-            props.masChangeAC(mas.current.value)
+            props.objChangeAC('mas', mas.current.value)
         }
     }
 ////////////////////    событие при изменении коэффициента лобового сопроотивления      ////////////////////
     let drag_coef = React.createRef()
     let dragCoefChange = () => {
         if (props.edit_mod === 1 || props.create_mod === 1) {
-            props.dragCoefChangeAC(drag_coef.current.value)
+            props.objChangeAC('drag_coef', drag_coef.current.value)
         }
     }
 

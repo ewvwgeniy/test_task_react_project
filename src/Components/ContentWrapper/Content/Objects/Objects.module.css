@@ -10,7 +10,7 @@
     overflow-y: scroll;
 }
 .objects::-webkit-scrollbar {
-    width: 0px;
+    width: 0;
 }
 
 .object {
@@ -19,7 +19,7 @@
     cursor: pointer;
     display: flex;
     align-items: center;
-    font-family: Roboto;
+    font-family: Roboto, serif;
     font-size: 18px;
     font-stretch: normal;
     font-style: normal;
@@ -42,7 +42,7 @@
     cursor: pointer;
     display: flex;
     align-items: center;
-    font-family: Roboto;
+    font-family: Roboto, serif;
     font-weight: bold;
     font-size: 18px;
     font-stretch: normal;
@@ -65,7 +65,7 @@
 }
 
 .new_object_btn {
-    font-family: Roboto;
+    font-family: Roboto, serif;
     font-size: large;
     background-color: #3365FE;
     color: #E7EDFF;

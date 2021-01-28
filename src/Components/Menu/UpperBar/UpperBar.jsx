@@ -5,7 +5,7 @@ import menu from "@material-ui/icons/MenuRounded"
 
 
 
-const UpperBar = (props) => {
+const UpperBar = () => {
     return (
         <div className={s.main_menu}>
             <SvgIcon className={s.icon} component={menu}/>
